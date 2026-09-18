@@ -29,7 +29,14 @@ If you are new to the project:
 
 - **[What is Meldframe?](docs/INTRODUCTION.md)** — the project in plain terms.
 - **[Features and current status](docs/FEATURES.md)** — what is implemented, verified, experimental or still planned.
-- **[Using Meldframe](docs/USAGE.md)** — current development-build workflow and runtime setup.
+- **[Installation and setup](docs/INSTALLATION.md)** — what the development build needs, including the current Termux path.
+- **[Using Meldframe](docs/USAGE.md)** — the current development-build workflow.
+- **[Troubleshooting](docs/TROUBLESHOOTING.md)** — diagnose setup, runtime, Terminal, Code and capability failures by layer.
+
+Learn the main subsystems:
+
+- **[Terminal](docs/TERMINAL.md)** — sessions, runtimes, transports, verified behavior and current limitations.
+- **[Code / service-backed apps](docs/CODE.md)** — Linux service + Android WebView composition, health and gateway behavior.
 - **[Capabilities](docs/CAPABILITIES.md)** — why Meldframe says Available, Experimental, Broken, Unknown, and more.
 - **[Extensions and plugins](docs/EXTENSIONS.md)** — apps, runtime providers, compatibility layers and future third-party plugins.
 - **[Architecture overview](docs/ARCHITECTURE.md)** — how execution, presentation, runtimes and windows fit together.
