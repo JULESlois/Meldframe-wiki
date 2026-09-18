@@ -16,13 +16,34 @@ This page separates four different claims:
 
 | Environment | Status | Evidence / limitation |
 | --- | --- | --- |
-| Windows Subsystem for Android (WSA) | **Primary verified development environment** | startup diagnostics, Terminal PoC, Termux `RUN_COMMAND`, Code/code-server and Wasm paths have recorded WSA verification |
+| Windows Subsystem for Android (WSA) | **Primary verified development environment** | startup diagnostics, Terminal PoC, Termux `RUN_COMMAND`, Code/code-server, Wasm and selected shell-level Android task-control semantics have recorded WSA verification |
 | Generic Android phone/tablet | **Partially covered by implementation; not broadly verified** | core Android behavior exists, but the current evidence set is not a representative device matrix |
 | Work profile | **Implemented path, still requires real-device verification** | the implementation handover explicitly notes WSA had only user 0 and could not validate work-profile behavior |
-| OEM desktop modes | **Not a compatibility promise yet** | capability/profile architecture exists, but OEM-specific profiles require evidence rather than manufacturer-name assumptions |
-| Rooted Android | **Not required for the current Termux/WebView path** | root may enable future backends but does not itself prove chroot, privileged windowing or other features work |
+| OEM desktop modes | **Detection/profile infrastructure exists; compatibility not broadly verified** | WSA profile is verified; Samsung/Motorola/Xiaomi/Lenovo matching must not be treated as proved control support without hardware evidence |
+| Rooted Android | **Experimental provider path, not a blanket compatibility claim** | Magisk adapter exists, but root must be explicitly granted and each operation proved; root does not imply every task/window operation works |
 
 WSA is useful engineering evidence, but it is not a substitute for Android hardware coverage. Documentation should not generalize a WSA success into “supported on Android” without qualification.
+
+## Android task/window control
+
+Android application launch and desktop-wide task control are separate compatibility dimensions.
+
+| Operation/path | Current evidence |
+| --- | --- |
+| Normal Android app catalogue/launch coordination | **Implemented** |
+| Backend-neutral task snapshot/reconciliation architecture | **Implemented** |
+| Ordinary APK observing/controlling all Android tasks | **Not available by default**; Android privileged/signature boundaries apply |
+| Magisk task provider | **Implemented, experimental/opt-in**; provider fails closed until uid 0 and a valid full snapshot are proved |
+| WSA move/resize command semantics | **Verified at shell level on one exact WSA fingerprint** |
+| WSA maximize/restore semantics | **Verified at shell level on the same fingerprint** |
+| WSA close semantics | **Verified at shell level for the constrained single-task-root case** |
+| WSA activate/minimize/fullscreen | **Not claimed** |
+| Successful in-app Magisk control round trip | **Still open on the recorded WSA test setup**; Magisk denied Meldframe's app UID even though developer `adb shell su` access existed |
+| Shizuku/system-service provider | **Roadmap/open work** |
+
+An accepted provider command never directly changes `WindowRegistry`. A later full native snapshot must confirm the result. This prevents a timeout, partial side effect or misleading OEM command result from becoming invented shell state.
+
+See [Android desktop integration and privileged task control](ANDROID_DESKTOP.md) for the user/tester-oriented explanation.
 
 ## Application/runtime paths
 
@@ -47,7 +68,7 @@ WSA is useful engineering evidence, but it is not a substitute for Android hardw
 
 | Presentation | Status | Scope |
 | --- | --- | --- |
-| Android task / existing Android surfaces | **Implemented** | uses Android's application/window mechanisms |
+| Android task / existing Android surfaces | **Implemented** | uses Android's application/window mechanisms; privileged desktop-wide control is a separate concern |
 | Meldframe-owned UI | **Implemented** | internal shell/application surfaces |
 | Android WebView | **Implemented and used by verified workloads** | Terminal/service-backed Web applications |
 | Wayland | **Roadmap** | future Linux GUI presentation |
@@ -69,6 +90,7 @@ Compatibility is determined at runtime where possible. A device can legitimately
 ```text
 Termux execution      READY
 WebView presentation  AVAILABLE
+Android task observe  AVAILABLE_WITH_SETUP
 Wayland               UNKNOWN / unavailable
 work profile          not present
 ```
@@ -79,13 +101,14 @@ work profile          not present
 
 A useful compatibility report should include:
 
-1. Android version and device/model;
+1. Android version, device/model and exact build fingerprint when privileged/task behavior is involved;
 2. whether the environment is WSA, a normal Android device, or an OEM desktop mode;
 3. the Meldframe build/commit;
-4. the relevant capability/runtime state;
+4. the relevant capability/runtime/provider state;
 5. the startup diagnostics and the exact failed action;
 6. for Termux, whether the real command verification succeeds;
-7. whether the failure is execution, presentation, permission/setup, or UI lifecycle.
+7. for privileged task control, provider name, granted operations and whether the result was confirmed by a later full snapshot;
+8. whether the failure is execution, presentation, permission/setup, provider access, or UI lifecycle.
 
 Meldframe writes startup diagnostics under the `MeldframeDiagnostics` log tag and, in the verified WSA path, to the app's external-files diagnostics file. See [Troubleshooting](TROUBLESHOOTING.md) for the current diagnostic workflow.
 
@@ -96,6 +119,8 @@ It does not claim:
 - that every Android 6+ device is functionally supported merely because `minSdk` permits installation;
 - that every Termux installation is a ready runtime;
 - that root enables all privileged desktop features;
+- that a successful `adb shell su` test proves Meldframe's app UID has root;
+- that OEM detection proves OEM task-control compatibility;
 - that PRoot implies Linux GUI support;
 - that Wayland/AVF/AppImage/Portal proposals are already shipped;
 - that a WSA verification result proves behavior on Samsung, Lenovo, Motorola, Pixel or other OEM environments.
@@ -105,6 +130,7 @@ Those claims require evidence from the corresponding layer and device.
 ## Related documents
 
 - [Features and current status](FEATURES.md)
+- [Android desktop integration and privileged task control](ANDROID_DESKTOP.md)
 - [Runtimes](RUNTIMES.md)
 - [Capabilities](CAPABILITIES.md)
 - [Installation](INSTALLATION.md)
