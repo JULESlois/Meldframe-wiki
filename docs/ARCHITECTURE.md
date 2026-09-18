@@ -178,3 +178,65 @@ launcher integration and normal application launch without requiring AppImage-sp
 
 See [Portal Framework](PORTALS.md), [Package installation / AppImage](PACKAGE_INSTALLATION.md) and the
 [research note](../research/portal-appimage-xdg.md).
+
+
+## Unified Installer as an application integration surface
+
+Meldframe already has a predecessor-era Installer whose current behavior is effectively managed-WebApp
+registration. The proposed architecture keeps that **one user-facing Installer** and replaces its
+URL-specific implementation with typed install providers.
+
+```
+URL / FileRef
+     ↓
+Meldframe Installer
+     ↓
+InstallSourceResolver
+     ↓
+InstallProvider
+     ↓
+InstallPlan
+     ↓
+Portal-backed desktop integration
+     ↓
+AppDescriptorRepository
+```
+
+Initial provider direction:
+
+```
+WebAppInstallProvider       — migration of current behavior
+AppImageInstallProvider     — first Linux package workload
+LinuxDesktopEntryProvider   — register apps already present in a runtime
+WindowsInstallProvider      — later, backed by WinCompat
+```
+
+The Installer is an application/workflow, not a package-format abstraction. The shell never needs an
+`if AppImage` or `if Windows EXE` branch.
+
+See [Meldframe Installer](PACKAGE_INSTALLATION.md).
+
+## Windows compatibility as an opaque compatibility extension
+
+Windows support is deliberately below the Linux/Wayland work in priority. When explored, the first
+implementation should reuse a Winlator-derived engine instead of recreating the compatibility stack.
+
+```
+Meldframe
+   ↓
+WindowsCompatibilityProvider
+   ↓
+Meldframe WinCompat adapter
+   ↓
+Winlator-derived companion/core
+```
+
+The engine may internally own Wine, CPU translation, graphics translation, rootfs/bootstrap, display,
+audio and input. Those internals do not need to become first-class Meldframe provider dimensions
+until a real workload requires independent selection.
+
+The existing Winlator-style presentation path can be used for the first proof. Once Meldframe Wayland
+is mature, Wine Wayland / XWayland can progressively replace it while the compatibility provider and
+application identities remain unchanged.
+
+See [Windows compatibility](WINDOWS_COMPATIBILITY.md).
