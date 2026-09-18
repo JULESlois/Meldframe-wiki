@@ -30,11 +30,23 @@ This directory is for useful possibilities that are deliberately **not roadmap c
 
 ### Desktop services and packages
 
+- Evolve the existing managed-WebApp Installer into one provider-driven Meldframe Installer instead of separate Web/AppImage/Windows installer apps.
+- Treat Web URL/PWA, AppImage, runtime `.desktop`, portable Linux bundles and later Windows PE/MSI as install-provider inputs that converge on `AppDescriptor`.
+
 - Meldframe Portal Framework for files, associations, launchers, wallpaper, notifications, shortcuts and other desktop services.
 - `xdg-desktop-portal-meldframe` so unmodified Linux applications can use Meldframe-native desktop services.
 - AppImage Installer as the first PackageInstaller workload, with extraction fallback when FUSE is unavailable.
 - Generic package framework that can later admit `.deb`, Flatpak, portable bundles and Meldframe extension packages.
 - User-activation tokens and scoped PortalGrant objects for sensitive/persistent desktop operations.
+
+### Windows compatibility
+
+- A separate Winlator-derived compatibility core/companion, controlled through a minimal Meldframe protocol rather than rewritten into Shell Core.
+- Keep Winlator's Wine/Box64/rootfs/graphics/audio/input integration opaque at first; split providers only when real workloads justify it.
+- Map Winlator “Container” to a backend-neutral `CompatibilityEnvironmentRef`, never to application identity.
+- Reuse the compatibility engine's existing display path for early experiments; migrate to Wine Wayland/XWayland only after Meldframe Wayland matures.
+- Discover Windows shortcuts/apps into normal `AppDescriptor`s and route host-boundary behavior through Meldframe Portals.
+- Keep the Windows path below Linux Runtime/Wayland in project priority.
 
 ### Compatibility
 
