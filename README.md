@@ -29,6 +29,7 @@ If you are new to the project:
 
 - **[What is Meldframe?](docs/INTRODUCTION.md)** — the project in plain terms.
 - **[Features and current status](docs/FEATURES.md)** — what is implemented, verified, experimental or still planned.
+- **[Known limitations](docs/KNOWN_LIMITATIONS.md)** — the short, conservative list of what current builds do not yet prove or provide.
 - **[Compatibility and verification](docs/COMPATIBILITY.md)** — where current behavior has actually been tested, and what remains unverified or roadmap-only.
 - **[Installation and setup](docs/INSTALLATION.md)** — what the development build needs, including the current Termux path.
 - **[Using Meldframe](docs/USAGE.md)** — the current development-build workflow.
@@ -93,7 +94,7 @@ The current development architecture already includes:
 - evidence-based WebAssembly capability probing;
 - an operation-scoped Android task-provider boundary, including an opt-in experimental Magisk adapter.
 
-The strongest recorded device evidence is currently from WSA, not a broad Android/OEM compatibility matrix. Work-profile behavior and OEM desktop modes still need representative hardware verification. The WSA task-control experiments prove selected command semantics on one exact build, but the recorded in-app Magisk path still lacks a successful privileged round trip. See [Compatibility and verification](docs/COMPATIBILITY.md) and [Android desktop integration](docs/ANDROID_DESKTOP.md).
+The strongest recorded device evidence is currently from WSA, not a broad Android/OEM compatibility matrix. Work-profile behavior and OEM desktop modes still need representative hardware verification. The WSA task-control experiments prove selected command semantics on one exact build, but the recorded in-app Magisk path still lacks a successful privileged round trip. See [Compatibility and verification](docs/COMPATIBILITY.md), [Known limitations](docs/KNOWN_LIMITATIONS.md) and [Android desktop integration](docs/ANDROID_DESKTOP.md).
 
 Major areas such as the versioned Meldframe Guest Protocol, full Wayland multi-window integration, AVF Linux providers, external extension packaging, Browser/Playwright brokers and broader privileged Android providers remain active roadmap work. Existing Termux command/service paths are implementation evidence for the future guest boundary, not proof that the general Guest Protocol already exists. See [Features and current status](docs/FEATURES.md) before assuming a feature is production-ready.
 
