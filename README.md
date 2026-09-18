@@ -38,6 +38,7 @@ If you are new to the project:
 
 Learn the main subsystems:
 
+- **[Android desktop integration](docs/ANDROID_DESKTOP.md)** — why launching apps differs from desktop-wide task control, and the current Magisk/provider evidence boundary.
 - **[Runtimes](docs/RUNTIMES.md)** — providers, runtime instances, current Termux verification, and the boundary between current and future Linux backends.
 - **[Terminal](docs/TERMINAL.md)** — sessions, runtimes, transports, verified behavior and current limitations.
 - **[Code / service-backed apps](docs/CODE.md)** — Linux service + Android WebView composition, health and gateway behavior.
@@ -86,12 +87,13 @@ The current development architecture already includes:
 - service supervision;
 - code-server as a service-backed application;
 - typed extension contributions;
-- evidence-based WebAssembly capability probing.
+- evidence-based WebAssembly capability probing;
+- an operation-scoped Android task-provider boundary, including an opt-in experimental Magisk adapter.
 
-The strongest recorded device evidence is currently from WSA, not a broad Android/OEM compatibility matrix. Work-profile behavior and OEM desktop modes still need representative hardware verification. See [Compatibility and verification](docs/COMPATIBILITY.md).
+The strongest recorded device evidence is currently from WSA, not a broad Android/OEM compatibility matrix. Work-profile behavior and OEM desktop modes still need representative hardware verification. The WSA task-control experiments prove selected command semantics on one exact build, but the recorded in-app Magisk path still lacks a successful privileged round trip. See [Compatibility and verification](docs/COMPATIBILITY.md) and [Android desktop integration](docs/ANDROID_DESKTOP.md).
 
 Major areas such as full Wayland multi-window integration, AVF Linux providers, external extension
-packaging, Browser/Playwright brokers and deeper Android system integration remain active roadmap
+packaging, Browser/Playwright brokers and broader privileged Android providers remain active roadmap
 work. See [Features and current status](docs/FEATURES.md) before assuming a feature is production-ready.
 
 ## For users
@@ -124,6 +126,7 @@ Read [Extensions and plugins](docs/EXTENSIONS.md).
 Start with:
 
 - [Architecture overview](docs/ARCHITECTURE.md)
+- [Android desktop integration](docs/ANDROID_DESKTOP.md)
 - [Runtimes](docs/RUNTIMES.md)
 - [Compatibility and verification](docs/COMPATIBILITY.md)
 - [Glossary](docs/GLOSSARY.md)
