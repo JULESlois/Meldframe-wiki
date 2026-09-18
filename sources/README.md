@@ -81,6 +81,20 @@ rather than adding links without context.
 - Background activity launch restrictions — host-side activation constraints:  
   https://developer.android.com/guide/components/activities/background-starts
 
+## Windows compatibility / Winlator
+
+- Winlator upstream repository — Android Windows compatibility stack and integration reference:  
+  https://github.com/brunodev85/winlator
+- Winlator application source repository — current app/core integration reference:  
+  https://github.com/brunodev85/winlator-app
+- Wine project — Win32 compatibility implementation and upstream Wayland/WoW64 work:  
+  https://www.winehq.org/
+- Box64 — x86_64 userspace translation on ARM64 and Wine integration:  
+  https://github.com/ptitSeb/box64
+
+These are implementation references for a future low-priority compatibility extension, not evidence
+that Windows support is already part of Meldframe.
+
 ## Research hygiene
 
 For each future research note:
