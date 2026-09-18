@@ -80,6 +80,7 @@ Important architecture concepts include:
 - `ExtensionRegistry` — typed contributions;
 - `PermissionBroker` — per-extension authority;
 - `ServiceSupervisor` — lifecycle/health for service-backed applications.
+- `PortalBroker` — **proposed** semantic desktop-service boundary for applications.
 
 ## Runtime family
 
@@ -144,3 +145,36 @@ split across execution and presentation environments.
 
 For the detailed comparison, see
 [ChromeOS, Android and Meldframe](../research/chromeos-android-meldframe.md).
+
+
+## Proposed desktop-service layer
+
+Execution and presentation are not enough to make an application feel native to a desktop.
+Applications also need desktop services: file choosers, Open With, default handlers, notifications,
+wallpaper, shortcuts, launchers, clipboard and other host integrations.
+
+The proposed Portal Framework adds that layer without exposing raw Android internals:
+
+```
+Application
+    ↓
+Portal API
+    ↓
+PortalBroker
+    ├ PermissionBroker
+    ├ CapabilityGraph
+    └ GrantStore
+    ↓
+Android / Shell / Runtime provider
+```
+
+The same semantic portal can be reached from Kotlin, Web/JavaScript, Wasm/WASI or a Linux guest.
+Linux compatibility can later map standard `xdg-desktop-portal` interfaces into Meldframe portals,
+while Wayland remains responsible for window/presentation integration.
+
+AppImage Installer is the proposed first package workload for this layer because it exercises
+FileRef, runtime selection, architecture compatibility, desktop-entry parsing, MIME associations,
+launcher integration and normal application launch without requiring AppImage-specific shell logic.
+
+See [Portal Framework](PORTALS.md), [Package installation / AppImage](PACKAGE_INSTALLATION.md) and the
+[research note](../research/portal-appimage-xdg.md).
