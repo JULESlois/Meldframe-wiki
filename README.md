@@ -42,6 +42,8 @@ Learn the main subsystems:
 - **[Capabilities](docs/CAPABILITIES.md)** — why Meldframe says Available, Experimental, Broken, Unknown, and more.
 - **[Extensions and plugins](docs/EXTENSIONS.md)** — apps, runtime providers, compatibility layers and future third-party plugins.
 - **[Architecture overview](docs/ARCHITECTURE.md)** — how execution, presentation, runtimes and windows fit together.
+- **[Portal Framework](docs/PORTALS.md)** — proposed desktop-service APIs for files, defaults, wallpaper, notifications, launchers and more.
+- **[Package installation / AppImage](docs/PACKAGE_INSTALLATION.md)** — proposed package framework and AppImage reference workflow.
 
 ## The core idea
 
@@ -136,6 +138,7 @@ security, crash isolation, update cadence and performance.
 The wiki is also where we keep material that is useful but not yet an implementation commitment:
 
 - [ChromeOS, Android and Meldframe](research/chromeos-android-meldframe.md)
+- [Desktop portals, AppImage and native-feeling application integration](research/portal-appimage-xdg.md)
 - [Ideas backlog](ideas/README.md)
 - [Primary source index](sources/README.md)
 
