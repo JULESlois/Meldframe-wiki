@@ -38,6 +38,7 @@ If you are new to the project:
 
 Learn the main subsystems:
 
+- **[Desktop sessions and shell modes](docs/DESKTOP_SESSIONS.md)** — how Meldframe can provide a desktop without necessarily replacing Android Home, and how session detection is resolved.
 - **[Android desktop integration](docs/ANDROID_DESKTOP.md)** — why launching apps differs from desktop-wide task control, and the current Magisk/provider evidence boundary.
 - **[Runtimes](docs/RUNTIMES.md)** — providers, runtime instances, current Termux verification, and the boundary between current and future Linux backends.
 - **[Terminal](docs/TERMINAL.md)** — sessions, runtimes, transports, verified behavior and current limitations.
@@ -81,6 +82,7 @@ The current development architecture already includes:
 - backend-neutral window/task state;
 - capability-aware planning;
 - Android work-profile application identity;
+- a live desktop-session resolver that separates desktop policy from Android Home/launcher duties;
 - a runtime-provider model and a Termux integration that verifies real command execution;
 - Meldframe Terminal with xterm.js and pluggable transports;
 - external Termux command/service integration;
@@ -126,6 +128,7 @@ Read [Extensions and plugins](docs/EXTENSIONS.md).
 Start with:
 
 - [Architecture overview](docs/ARCHITECTURE.md)
+- [Desktop sessions and shell modes](docs/DESKTOP_SESSIONS.md)
 - [Android desktop integration](docs/ANDROID_DESKTOP.md)
 - [Runtimes](docs/RUNTIMES.md)
 - [Compatibility and verification](docs/COMPATIBILITY.md)
