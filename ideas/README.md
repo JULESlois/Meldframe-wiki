@@ -28,6 +28,14 @@ This directory is for useful possibilities that are deliberately **not roadmap c
 - Unified Inspector adapters for Android, WebView, Wayland, Wasm and Terminal targets.
 - Personality packages that can replace shell surfaces without forking task/window semantics.
 
+### Desktop services and packages
+
+- Meldframe Portal Framework for files, associations, launchers, wallpaper, notifications, shortcuts and other desktop services.
+- `xdg-desktop-portal-meldframe` so unmodified Linux applications can use Meldframe-native desktop services.
+- AppImage Installer as the first PackageInstaller workload, with extraction fallback when FUSE is unavailable.
+- Generic package framework that can later admit `.deb`, Flatpak, portable bundles and Meldframe extension packages.
+- User-activation tokens and scoped PortalGrant objects for sensitive/persistent desktop operations.
+
 ### Compatibility
 
 - code-server as a first-class application adapter rather than "a page in a browser".
