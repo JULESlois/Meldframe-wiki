@@ -50,7 +50,8 @@ Learn the main subsystems:
 - **[Extensions and plugins](docs/EXTENSIONS.md)** — apps, runtime providers, compatibility layers and future third-party plugins.
 - **[Architecture overview](docs/ARCHITECTURE.md)** — how execution, presentation, runtimes and windows fit together.
 - **[Portal Framework](docs/PORTALS.md)** — proposed desktop-service APIs for files, defaults, wallpaper, notifications, launchers and more.
-- **[Package installation / AppImage](docs/PACKAGE_INSTALLATION.md)** — proposed package framework and AppImage reference workflow.
+- **[Meldframe Installer](docs/PACKAGE_INSTALLATION.md)** — one provider-driven installer for Web Apps, Linux packages and future Windows compatibility applications.
+- **[Windows compatibility](docs/WINDOWS_COMPATIBILITY.md)** — low-priority proposal for a Winlator-derived compatibility core behind a Meldframe plugin/adapter.
 
 ## The core idea
 
