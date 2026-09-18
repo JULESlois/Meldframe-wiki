@@ -44,6 +44,43 @@ rather than adding links without context.
 - RUN_COMMAND integration:  
   https://github.com/termux/termux-app/wiki/RUN_COMMAND-Intent
 
+## Desktop portals and Linux integration
+
+- xdg-desktop-portal documentation — semantic desktop services for sandboxed apps:  
+  https://flatpak.github.io/xdg-desktop-portal/docs/
+- DynamicLauncher — user-mediated persistent launcher installation:  
+  https://flatpak.github.io/xdg-desktop-portal/docs/doc-org.freedesktop.portal.DynamicLauncher.html
+- Documents portal — scoped document access and grants:  
+  https://flatpak.github.io/xdg-desktop-portal/docs/doc-org.freedesktop.portal.Documents.html
+- GlobalShortcuts portal — application/session-scoped shortcut registration:  
+  https://flatpak.github.io/xdg-desktop-portal/docs/doc-org.freedesktop.portal.GlobalShortcuts.html
+- Writing an xdg-desktop-portal backend — desktop-specific backend contract:  
+  https://flatpak.github.io/xdg-desktop-portal/docs/writing-a-new-backend.html
+- xdg-activation — compositor-mediated user activation tokens:  
+  https://wayland.app/protocols/xdg-activation-v1
+- freedesktop MIME application associations:  
+  https://specifications.freedesktop.org/mime-apps/latest-single/
+- Desktop Entry specification:  
+  https://specifications.freedesktop.org/desktop-entry/latest/
+
+## AppImage
+
+- AppImage architecture — runtime plus filesystem image/AppRun model:  
+  https://docs.appimage.org/reference/architecture.html
+- AppImage FUSE troubleshooting and extraction fallback:  
+  https://docs.appimage.org/user-guide/troubleshooting/fuse.html
+- AppImage desktop integration metadata:  
+  https://docs.appimage.org/reference/desktop-integration.html
+
+## Android desktop-service APIs
+
+- RoleManager — user-mediated Android roles/default-app requests:  
+  https://developer.android.com/reference/android/app/role/RoleManager
+- WallpaperManager — Android wallpaper provider mechanism:  
+  https://developer.android.com/reference/android/app/WallpaperManager
+- Background activity launch restrictions — host-side activation constraints:  
+  https://developer.android.com/guide/components/activities/background-starts
+
 ## Research hygiene
 
 For each future research note:
