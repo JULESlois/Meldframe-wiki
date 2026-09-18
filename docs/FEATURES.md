@@ -1,0 +1,136 @@
+# Features and current status
+
+**Audience:** users and evaluators  
+**Status:** user documentation
+
+Meldframe is under active development. This page distinguishes **implemented/verified architecture**
+from **planned or experimental directions** so the project is not described as more complete than it
+is.
+
+## Desktop shell
+
+The shell provides the familiar desktop concepts Meldframe grew from: Start/application surfaces,
+taskbar integration, internal windows and a desktop-oriented interaction model.
+
+The newer architecture routes application enumeration and launch through common services rather than
+letting every UI surface talk directly to Android package APIs.
+
+Current architecture includes:
+
+- a unified `AppDescriptorRepository`;
+- typed application IDs, including Android work-profile identity;
+- a central `ApplicationCoordinator` and execution planner;
+- a backend-neutral `WindowRegistry`;
+- capability-aware backend admission;
+- desktop session modes and device profiles.
+
+Deeper Android task control depends on the authority available on a device. Ordinary APK, root,
+Shizuku/system and future WM Shell integrations are treated as different capability providers.
+
+## Meldframe Terminal
+
+Terminal is the first runtime application used to validate the Linux/runtime architecture.
+
+Implemented pieces include:
+
+- xterm.js presentation inside a Meldframe-owned WebView;
+- byte-oriented terminal protocol;
+- terminal profiles;
+- sessions, tabs and pane-domain models;
+- pluggable `TerminalTransport`;
+- ttyd transport;
+- a minimal RFC 6455 WebSocket client for the local ttyd path;
+- runtime selection as part of a terminal profile.
+
+The first real-device/WSA PoC validated shell I/O, resizing, title updates and common keyboard
+sequences. Rich tab-strip UI, multiple visible panes, reconnect semantics and a direct Meldframe PTY
+transport remain ongoing work.
+
+## Linux runtime integration
+
+The first real RuntimeProvider uses external Termux.
+
+The current path can:
+
+- detect the Termux host and whether setup is complete;
+- invoke commands through Termux `RUN_COMMAND`;
+- collect output and exit status;
+- start service-backed workloads;
+- report health into the runtime/capability model.
+
+Longer-term providers are expected to include a curated Meldframe Runtime companion, chroot,
+Android Virtualization Framework (AVF) guests, SSH and remote runtimes.
+
+## Code / code-server
+
+Code is the first service-backed compatibility application.
+
+The current architecture treats code-server as a Linux service while presenting it as a Meldframe
+application through Android WebView. The shell supervises the service, checks health before opening
+the window and places a token-gated loopback gateway between the WebView and the service.
+
+This validates an important Meldframe pattern:
+
+```
+Linux/service backend
+        +
+Android-native presentation
+        =
+one Meldframe application
+```
+
+## Web and Wasm
+
+The extension system already has capability probes, presentation contributions and a Wasm
+application path.
+
+A current WebView-based Wasm probe executes real modules instead of assuming support from a browser
+version. WebAssembly and SIMD have been validated on the existing WSA test environment; threads,
+WASI and GPU-related features remain capability-dependent.
+
+Meldframe intentionally treats Wasm as a runtime/capability technology rather than assuming it must
+replace Android View or DOM rendering.
+
+## Extensions
+
+The current extension registry supports typed contribution points rather than a single catch-all
+Plugin interface. Existing built-in extensions already prove several different shapes:
+
+- Terminal: App + Runtime + Terminal contributions;
+- Code: ServiceApp contribution;
+- Wasm: CapabilityProbe + PresentationBackend + WasmApp contributions.
+
+External third-party extension packaging is **not yet a stable public format**. The current model is
+being validated with built-in extensions before the process/package boundary is frozen.
+
+See [Extensions and plugins](EXTENSIONS.md).
+
+## Capability-aware behavior
+
+Meldframe does not treat support as a boolean. Features can be:
+
+`Available`, `AvailableWithSetup`, `Experimental`, `Broken`, `Unsupported`, or `Unknown`.
+
+This is used for device-specific desktop behavior, runtime availability, Web/Wasm features,
+presentation backends and system integration.
+
+See [Capabilities](CAPABILITIES.md).
+
+## Active development areas
+
+Important directions that should currently be read as roadmap work, not completed product promises:
+
+- per-window Linux GUI integration through Wayland;
+- XWayland compatibility;
+- dma-buf/AHardwareBuffer/SurfaceControl fast paths;
+- AVF-backed Linux runtime;
+- Meldframe Runtime companion;
+- Browser Broker and Playwright/Puppeteer integration with Android Chromium;
+- Electron-compatible split runtime;
+- unified FileRef/FileBridge across Android/Linux/remote files;
+- Inspector/debug adapters;
+- external extension package loading and sandboxing;
+- deeper SystemUI/Quickstep/WM Shell integration;
+- multiple shell personalities.
+
+For the architecture behind those directions, see [Architecture overview](ARCHITECTURE.md).
