@@ -29,6 +29,7 @@ If you are new to the project:
 
 - **[What is Meldframe?](docs/INTRODUCTION.md)** — the project in plain terms.
 - **[Features and current status](docs/FEATURES.md)** — what is implemented, verified, experimental or still planned.
+- **[Compatibility and verification](docs/COMPATIBILITY.md)** — where current behavior has actually been tested, and what remains unverified or roadmap-only.
 - **[Installation and setup](docs/INSTALLATION.md)** — what the development build needs, including the current Termux path.
 - **[Using Meldframe](docs/USAGE.md)** — the current development-build workflow.
 - **[Troubleshooting](docs/TROUBLESHOOTING.md)** — diagnose setup, runtime, Terminal, Code and capability failures by layer.
@@ -37,6 +38,7 @@ If you are new to the project:
 
 Learn the main subsystems:
 
+- **[Runtimes](docs/RUNTIMES.md)** — providers, runtime instances, current Termux verification, and the boundary between current and future Linux backends.
 - **[Terminal](docs/TERMINAL.md)** — sessions, runtimes, transports, verified behavior and current limitations.
 - **[Code / service-backed apps](docs/CODE.md)** — Linux service + Android WebView composition, health and gateway behavior.
 - **[Capabilities](docs/CAPABILITIES.md)** — why Meldframe says Available, Experimental, Broken, Unknown, and more.
@@ -78,13 +80,15 @@ The current development architecture already includes:
 - backend-neutral window/task state;
 - capability-aware planning;
 - Android work-profile application identity;
-- a runtime-provider model;
+- a runtime-provider model and a Termux integration that verifies real command execution;
 - Meldframe Terminal with xterm.js and pluggable transports;
 - external Termux command/service integration;
 - service supervision;
 - code-server as a service-backed application;
 - typed extension contributions;
 - evidence-based WebAssembly capability probing.
+
+The strongest recorded device evidence is currently from WSA, not a broad Android/OEM compatibility matrix. Work-profile behavior and OEM desktop modes still need representative hardware verification. See [Compatibility and verification](docs/COMPATIBILITY.md).
 
 Major areas such as full Wayland multi-window integration, AVF Linux providers, external extension
 packaging, Browser/Playwright brokers and deeper Android system integration remain active roadmap
@@ -120,6 +124,8 @@ Read [Extensions and plugins](docs/EXTENSIONS.md).
 Start with:
 
 - [Architecture overview](docs/ARCHITECTURE.md)
+- [Runtimes](docs/RUNTIMES.md)
+- [Compatibility and verification](docs/COMPATIBILITY.md)
 - [Glossary](docs/GLOSSARY.md)
 - [Extensions and plugins](docs/EXTENSIONS.md)
 - [Capabilities](docs/CAPABILITIES.md)
