@@ -32,6 +32,8 @@ If you are new to the project:
 - **[Installation and setup](docs/INSTALLATION.md)** — what the development build needs, including the current Termux path.
 - **[Using Meldframe](docs/USAGE.md)** — the current development-build workflow.
 - **[Troubleshooting](docs/TROUBLESHOOTING.md)** — diagnose setup, runtime, Terminal, Code and capability failures by layer.
+- **[FAQ](docs/FAQ.md)** — concise answers about root, Termux, Linux apps, Wayland, plugins and project boundaries.
+- **[Glossary](docs/GLOSSARY.md)** — definitions for AppId, RuntimeProvider, ExecutionPlan, capabilities, extensions and roadmap terminology.
 
 Learn the main subsystems:
 
@@ -116,6 +118,7 @@ Read [Extensions and plugins](docs/EXTENSIONS.md).
 Start with:
 
 - [Architecture overview](docs/ARCHITECTURE.md)
+- [Glossary](docs/GLOSSARY.md)
 - [Extensions and plugins](docs/EXTENSIONS.md)
 - [Capabilities](docs/CAPABILITIES.md)
 - [Development principles](development/PRINCIPLES.md)
