@@ -41,6 +41,7 @@ Learn the main subsystems:
 - **[Desktop sessions and shell modes](docs/DESKTOP_SESSIONS.md)** — how Meldframe can provide a desktop without necessarily replacing Android Home, and how session detection is resolved.
 - **[Android desktop integration](docs/ANDROID_DESKTOP.md)** — why launching apps differs from desktop-wide task control, and the current Magisk/provider evidence boundary.
 - **[Runtimes](docs/RUNTIMES.md)** — providers, runtime instances, current Termux verification, and the boundary between current and future Linux backends.
+- **[Guest Protocol](docs/GUEST_PROTOCOL.md)** — proposed versioned host↔guest boundary for exec, PTY, services, files and desktop integration; current Termux paths are narrower and not yet this stable protocol.
 - **[Terminal](docs/TERMINAL.md)** — sessions, runtimes, transports, verified behavior and current limitations.
 - **[Code / service-backed apps](docs/CODE.md)** — Linux service + Android WebView composition, health and gateway behavior.
 - **[Capabilities](docs/CAPABILITIES.md)** — why Meldframe says Available, Experimental, Broken, Unknown, and more.
@@ -94,9 +95,7 @@ The current development architecture already includes:
 
 The strongest recorded device evidence is currently from WSA, not a broad Android/OEM compatibility matrix. Work-profile behavior and OEM desktop modes still need representative hardware verification. The WSA task-control experiments prove selected command semantics on one exact build, but the recorded in-app Magisk path still lacks a successful privileged round trip. See [Compatibility and verification](docs/COMPATIBILITY.md) and [Android desktop integration](docs/ANDROID_DESKTOP.md).
 
-Major areas such as full Wayland multi-window integration, AVF Linux providers, external extension
-packaging, Browser/Playwright brokers and broader privileged Android providers remain active roadmap
-work. See [Features and current status](docs/FEATURES.md) before assuming a feature is production-ready.
+Major areas such as the versioned Meldframe Guest Protocol, full Wayland multi-window integration, AVF Linux providers, external extension packaging, Browser/Playwright brokers and broader privileged Android providers remain active roadmap work. Existing Termux command/service paths are implementation evidence for the future guest boundary, not proof that the general Guest Protocol already exists. See [Features and current status](docs/FEATURES.md) before assuming a feature is production-ready.
 
 ## For users
 
@@ -131,6 +130,7 @@ Start with:
 - [Desktop sessions and shell modes](docs/DESKTOP_SESSIONS.md)
 - [Android desktop integration](docs/ANDROID_DESKTOP.md)
 - [Runtimes](docs/RUNTIMES.md)
+- [Guest Protocol](docs/GUEST_PROTOCOL.md)
 - [Compatibility and verification](docs/COMPATIBILITY.md)
 - [Glossary](docs/GLOSSARY.md)
 - [Extensions and plugins](docs/EXTENSIONS.md)
