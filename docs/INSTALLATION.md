@@ -113,6 +113,37 @@ Meldframe waits for the service health endpoint before treating the application 
 WebView reaches the service through Meldframe's loopback token proxy rather than exposing an
 unauthenticated service directly as the application boundary.
 
+## Optional ADB shell bridge for acceptance testing
+
+Meldframe contains an ADB-facing shell bridge so testers can drive the **real composed shell** without
+fragile coordinate taps. It can list applications/windows and route launch/window commands through
+the same launcher and `WindowCommands` objects used by the UI. This is a test/control surface, not a
+normal application API and not a prerequisite for using Meldframe.
+
+The bridge now exists in release builds, but a fresh install keeps its Android receiver component
+disabled. To opt in, open:
+
+**Settings → Privacy and security → For developers → Shell bridge**
+
+Turning the switch on is only the first of two gates. The receiver also requires Android's
+`android.permission.DUMP`, a `signature|privileged` permission available to ADB shell/the system, not
+to an ordinary installed application. The switch therefore expresses user intent; it is **not** the
+security boundary that makes the receiver safe to export.
+
+Turning the switch off disables the receiver component itself rather than merely making an enabled
+receiver reject commands. On startup Meldframe reapplies the stored preference to the component, so
+an external `pm enable` does not permanently make the UI report a contradictory state.
+
+The implementation repository verified this behavior on WSA: a fresh install left the receiver
+disabled and shell commands silent; enabling the developer switch made the bridge answer; disabling
+it made the bridge silent again. Do not infer from that acceptance result that ADB automation is an
+end-user feature or that non-ADB apps can call the bridge.
+
+The repository's `mf.sh` helper is the current acceptance client. Commands documented in implementation
+commits include `apps`, `launch`, `windows`, `minimize`, and the Linux registration helpers used by
+current development. Treat that script as a development interface: command names and output are not
+a stable public API unless the implementation explicitly promotes them to one.
+
 ## Privileged desktop features
 
 Some task/window/system operations cannot be implemented by an ordinary Android APK on every
