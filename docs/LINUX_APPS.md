@@ -5,7 +5,7 @@
 
 Meldframe can discover applications from freedesktop `.desktop` entries in a registered guest/container application directory, merge them into its common application catalogue, and list eligible entries in Start.
 
-This is an **application-discovery and Start-integration milestone, not Linux GUI execution support**. A discovered Linux application can appear in Start, but the current build deliberately refuses to launch it because the Linux GUI execution/presentation chain is not implemented yet.
+This is an **application-discovery and Start-integration milestone, not Linux GUI execution support**. A discovered Linux application can appear in Start, but the current build deliberately refuses to launch it because the Linux GUI execution/presentation backend is not implemented as a product feature yet.
 
 ## What is implemented
 
@@ -29,9 +29,9 @@ The parser has been exercised against real WPS Office 12.1.2 and Cylheim 4.11.1 
 
 Discovery does **not** currently imply any of the following:
 
-- launching an arbitrary Linux GUI application;
-- a Wayland compositor/presentation backend;
-- XWayland support;
+- launching an arbitrary Linux GUI application from its Start entry;
+- a production Wayland compositor/presentation backend;
+- product XWayland support;
 - automatic discovery of every Termux/PRoot/chroot distribution;
 - direct scanning of an arbitrary PRoot guest filesystem through a runtime provider — the current scanner needs a path visible to the Android process;
 - resolving Linux icon themes — discovered Linux applications currently use the generic managed placeholder rather than their `.desktop` `Icon` theme asset;
@@ -56,7 +56,7 @@ mf.sh uninstall debian
 
 `install` associates a container ID with either a `.desktop` file or a directory containing entries. The registration stores the **path**, not a snapshot of parsed applications. On a later shell start Meldframe rescans that path.
 
-The registration itself persists across an APK reinstall in the current WSA validation because Meldframe stores the registered path and rescans it at startup. This does not guarantee that the referenced path or guest contents survive every Android uninstall/update/storage scenario.
+The registration itself persisted across an APK reinstall in the current WSA validation because Meldframe stored the registered path and rescanned it at startup. This does not guarantee that the referenced path or guest contents survive every Android uninstall/update/storage scenario.
 
 `linux` reports registered containers, discovered entries and the argument vector each executable entry would use. `uninstall` removes the registration; it does not uninstall software from the guest Linux environment.
 
@@ -95,6 +95,29 @@ That distinction is both semantic and security-relevant: a filename containing s
 
 This parsing work establishes what an eventual Linux execution backend should run. It does not make that backend exist today.
 
+## Linux GUI research status
+
+There is now stronger research evidence than the simple word “roadmap” suggests, but it still must not be confused with user support.
+
+A 2026-09-19 M3 experiment ran the real Cylheim 4.11.1 Linux GUI application under a nested sway compositor in WSL, captured the rendered desktop, and independently decoded a complete frame from wayvnc's RFB socket. Meldframe could load the noVNC client and establish the WebSocket connection through `adb reverse`.
+
+The last presentation link did not work: noVNC stayed blank. The same blank result reproduced in headless Edge outside Meldframe, so the evidence narrows that failure to the noVNC/neatvnc development harness rather than demonstrating a Meldframe WebView failure.
+
+The correct conclusion is therefore narrow:
+
+```text
+real Linux GUI app executes        proven in research PoC
+compositor renders it              proven in research PoC
+rendered frame reaches RFB wire    proven in research PoC
+noVNC paints that frame            not proven; current PoC fails here
+Start entry launches Linux GUI     not implemented
+per-window Wayland integration     not implemented
+```
+
+WSL was used for this experiment because the development WSA guest had no network access to install the required stack. That does not make WSL a supported Meldframe runtime provider, and the experiment does not establish equivalent behavior on Android OEM devices, Termux, PRoot or AVF.
+
+See [Runtimes](RUNTIMES.md) for the capability-probe and presentation details.
+
 ## Where this fits in the roadmap
 
 A useful way to read the current state is:
@@ -104,7 +127,9 @@ A useful way to read the current state is:
             ↓
 Start/application catalogue listing   implemented + WSA verified
             ↓
-Linux GUI execution backend           not yet implemented
+whole-display GUI chain research      partial PoC; app → RFB frame proven
+            ↓
+Linux GUI execution backend           not yet implemented as product support
             ↓
 Wayland/XWayland presentation         roadmap
 ```
