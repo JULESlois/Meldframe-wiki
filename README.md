@@ -42,6 +42,7 @@ Learn the main subsystems:
 - **[Desktop sessions and shell modes](docs/DESKTOP_SESSIONS.md)** — how Meldframe can provide a desktop without necessarily replacing Android Home, and how session detection is resolved.
 - **[Android desktop integration](docs/ANDROID_DESKTOP.md)** — why launching apps differs from desktop-wide task control, and the current Magisk/provider evidence boundary.
 - **[Runtimes](docs/RUNTIMES.md)** — providers, runtime instances, current Termux verification, and the boundary between current and future Linux backends.
+- **[Linux application discovery](docs/LINUX_APPS.md)** — current `.desktop` catalogue integration, test registration, and the important boundary that discovered Linux apps do not yet have a GUI launch backend.
 - **[Runtime isolation and trust](docs/RUNTIME_SECURITY.md)** — why Termux, PRoot, root/chroot, VM and remote execution have different security properties, and which isolation ideas are still roadmap-only.
 - **[Guest Protocol](docs/GUEST_PROTOCOL.md)** — proposed versioned host↔guest boundary for exec, PTY, services, files and desktop integration; current Termux paths are narrower and not yet this stable protocol.
 - **[Terminal](docs/TERMINAL.md)** — sessions, runtimes, transports, verified behavior and current limitations.
@@ -87,6 +88,7 @@ The current development architecture already includes:
 - backend-neutral window/task state;
 - capability-aware planning;
 - Android work-profile application identity;
+- Linux `.desktop` application discovery with container-scoped identity (catalogue/discovery only; no Linux GUI launch backend yet);
 - a live desktop-session resolver that separates desktop policy from Android Home/launcher duties;
 - a runtime-provider model and a Termux integration that verifies real command execution;
 - Meldframe Terminal with xterm.js and pluggable transports;
@@ -100,14 +102,16 @@ The current development architecture already includes:
 
 The strongest recorded device evidence is currently from WSA, not a broad Android/OEM compatibility matrix. Work-profile behavior and OEM desktop modes still need representative hardware verification. The WSA task-control experiments prove selected command semantics on one exact build, but the recorded in-app Magisk path still lacks a successful privileged round trip. See [Compatibility and verification](docs/COMPATIBILITY.md), [Known limitations](docs/KNOWN_LIMITATIONS.md) and [Android desktop integration](docs/ANDROID_DESKTOP.md).
 
-Major areas such as the versioned Meldframe Guest Protocol, full Wayland multi-window integration, AVF Linux providers, external extension packaging, Browser/Playwright brokers and broader privileged Android providers remain active roadmap work. The current internal Browser is not the proposed Browser Broker. Existing Termux command/service paths are implementation evidence for the future guest boundary, not proof that the general Guest Protocol already exists. Runtime isolation is also not a single yes/no capability: PRoot is a compatibility mechanism rather than a strong sandbox, while AVF is a future VM-backed provider target. See [Runtime isolation and trust](docs/RUNTIME_SECURITY.md) and [Features and current status](docs/FEATURES.md) before assuming a feature or isolation property is production-ready.
+Major areas such as Linux GUI execution/presentation, the versioned Meldframe Guest Protocol, full Wayland multi-window integration, AVF Linux providers, external extension packaging, Browser/Playwright brokers and broader privileged Android providers remain active roadmap work. The current internal Browser is not the proposed Browser Broker. Existing Termux command/service paths are implementation evidence for the future guest boundary, not proof that the general Guest Protocol already exists. Runtime isolation is also not a single yes/no capability: PRoot is a compatibility mechanism rather than a strong sandbox, while AVF is a future VM-backed provider target. See [Runtime isolation and trust](docs/RUNTIME_SECURITY.md) and [Features and current status](docs/FEATURES.md) before assuming a feature or isolation property is production-ready.
 
 ## For users
 
 ### Applications
 
 Meldframe aims to make Android apps, internal apps, service-backed Web apps and Linux applications
-feel like members of the same desktop rather than separate subsystems.
+feel like members of the same desktop rather than separate subsystems. Current Linux `.desktop`
+discovery is a concrete step toward that catalogue model, but discovered Linux GUI applications are
+not launchable yet.
 
 ### Capabilities
 
@@ -132,7 +136,9 @@ Read [Extensions and plugins](docs/EXTENSIONS.md).
 Current builds include an opt-in ADB acceptance bridge that exercises the live application catalogue,
 launcher and window-command surfaces without coordinate tapping. It ships disabled and still relies
 on Android's privileged `DUMP` permission; the Settings switch is not by itself an authorization
-boundary. It is a test surface, not a stable public automation API.
+boundary. It is a test surface, not a stable public automation API. The same bridge currently exposes
+the development-only Linux `.desktop` registration/listing commands documented in
+[Linux application discovery](docs/LINUX_APPS.md).
 
 Read [Testing Meldframe with ADB](docs/TESTING_AND_ADB.md) and [Keyboard and accessibility](docs/KEYBOARD_ACCESSIBILITY.md).
 
@@ -144,6 +150,7 @@ Start with:
 - [Desktop sessions and shell modes](docs/DESKTOP_SESSIONS.md)
 - [Android desktop integration](docs/ANDROID_DESKTOP.md)
 - [Runtimes](docs/RUNTIMES.md)
+- [Linux application discovery](docs/LINUX_APPS.md)
 - [Runtime isolation and trust](docs/RUNTIME_SECURITY.md)
 - [Guest Protocol](docs/GUEST_PROTOCOL.md)
 - [Compatibility and verification](docs/COMPATIBILITY.md)
