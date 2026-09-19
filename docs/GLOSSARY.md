@@ -11,11 +11,23 @@ Meldframe deliberately separates concepts that ordinary Android launchers often 
 
 The stable identity of a logical application inside Meldframe. An AppId should not change merely because the application is launched through a different runtime or presentation backend.
 
-For Android applications, identity must be able to distinguish profiles/users rather than assuming a package name is globally unique.
+For Android applications, identity must be able to distinguish profiles/users rather than assuming a package name is globally unique. Registered Linux applications use a namespaced `AppId.Linux(container, desktopId)`, so the same desktop ID in two containers remains two applications.
 
 ### AppDescriptor
 
 Metadata describing a logical application to the common application catalogue: identity, name/icon information and the information required for launch planning. UI surfaces consume descriptors instead of directly knowing how Android, Linux, Web or service-backed applications are discovered.
+
+### Linux application discovery
+
+**Implemented; GUI launch is not.** Meldframe can scan registered, Android-visible container roots for freedesktop `.desktop` entries and add accepted entries to its application catalogue. Registered Linux applications can then appear in Start.
+
+Discovery is not execution. The current implementation does not yet provide a Linux GUI launch backend for `AppId.Linux`, and guest icon-theme lookup is also not implemented. See [Linux applications](LINUX_APPS.md).
+
+### `.desktop` entry
+
+A freedesktop desktop-entry file used by Linux desktop environments to describe an application. Meldframe parses relevant application metadata and `Exec` arguments when discovering Linux applications.
+
+An entry is metadata, not a trusted shell script. Meldframe's current parser turns `Exec` into arguments and performs supported field-code substitution rather than concatenating it into a shell command.
 
 ### ApplicationCoordinator
 
@@ -43,6 +55,14 @@ One concrete runtime target selected from a provider. Profiles and applications 
 
 Evidence that a runtime can actually perform the operation Meldframe needs. “Termux is installed” is therefore weaker than “a command round-trip succeeded”.
 
+### GuestCapabilityProbe
+
+**Implemented and unit-tested core logic; not yet wired into production providers/planning.** A structured probe for facts about a particular Linux guest, including libc/runtime and graphics-related facilities.
+
+Its answers use `PRESENT`, `ABSENT` and `UNKNOWN`. `UNKNOWN` means the probe could not establish the fact; it must not silently become either “supported” or “unsupported”. Likewise, finding one component such as XWayland does not prove a usable presentation chain exists.
+
+This is deliberately guest-specific. A native Termux environment and a PRoot distribution inside the same Termux installation can have different capabilities.
+
 ### Meldframe Runtime
 
 **Planned.** A dedicated companion runtime intended to make Linux/Unix integration easier and more predictable than requiring users to assemble an external environment manually. It is one RuntimeProvider, not the definition of Linux support as a whole.
@@ -67,6 +87,12 @@ The mechanism that presents an application to the user. Examples include an Andr
 
 Execution and presentation are intentionally independent: a Linux service can be presented by Android WebView.
 
+### Whole-display Linux GUI PoC
+
+**Research evidence, not a product backend.** The M3 experiment has demonstrated a real Linux GUI application rendering through a nested compositor and reaching the RFB wire. The tested noVNC presentation link did not paint successfully, and Meldframe still has no production `AppId.Linux` GUI-launch path.
+
+This PoC therefore narrows engineering uncertainty; it does not establish general Wayland, XWayland, VNC or Linux desktop support.
+
 ### WindowRegistry
 
 Meldframe's backend-neutral record of live window/task facts. It does not mean Meldframe owns Android's physical compositor.
@@ -90,6 +116,8 @@ See [Capabilities](CAPABILITIES.md).
 ### Capability probe
 
 A component that gathers evidence about a capability. Meldframe prefers real probes and health checks over inferring support from a device brand or version string alone.
+
+A generic capability probe should not be confused with the current `GuestCapabilityProbe`: the latter is specific core logic for interrogating a Linux guest and is not yet connected to production RuntimeProvider/planner paths.
 
 ### Device profile
 
@@ -145,6 +173,8 @@ An application whose backend is a supervised service while its user-facing prese
 
 **Research/roadmap.** A host-side browser capability that could let Linux programs use Android WebView/Chromium for URL presentation or automation rather than requiring a complete Linux Chromium stack.
 
+The current built-in Browser is a separate implemented application and must not be treated as evidence that Browser Broker exists.
+
 ### ElectronCompat
 
 **Research/roadmap.** A compatibility direction in which compatible Electron applications could keep a Linux/Node backend while moving presentation to an Android WebView/Chromium surface. It is not a general-purpose Electron compatibility guarantee.
@@ -175,6 +205,8 @@ A possibility under investigation. Research notes are evidence and reasoning, no
 
 - [What is Meldframe?](INTRODUCTION.md)
 - [Features and current status](FEATURES.md)
+- [Linux applications](LINUX_APPS.md)
+- [Runtimes](RUNTIMES.md)
 - [Capabilities](CAPABILITIES.md)
 - [Extensions and plugins](EXTENSIONS.md)
 - [Architecture overview](ARCHITECTURE.md)
