@@ -3,9 +3,9 @@
 **Audience:** users, testers and contributors  
 **Status:** current implementation documentation; checked against `Hyperdroid-recovery` main on 2026-09-19
 
-Meldframe can now discover applications from freedesktop `.desktop` entries in a registered guest/container application directory and merge them into its common application catalogue.
+Meldframe can discover applications from freedesktop `.desktop` entries in a registered guest/container application directory, merge them into its common application catalogue, and list eligible entries in Start.
 
-This is an **application-discovery milestone, not Linux GUI execution support**. A discovered Linux application can appear in Start, but the current build deliberately refuses to launch it because the Linux GUI execution/presentation chain is not implemented yet.
+This is an **application-discovery and Start-integration milestone, not Linux GUI execution support**. A discovered Linux application can appear in Start, but the current build deliberately refuses to launch it because the Linux GUI execution/presentation chain is not implemented yet.
 
 ## What is implemented
 
@@ -14,6 +14,8 @@ The current implementation includes:
 - `.desktop` file scanning and parsing;
 - a Linux application catalogue/source feeding the common `AppDescriptorRepository`;
 - stable Linux identities of the form `AppId.Linux(container, desktopId)`;
+- Start-menu listing for applications from explicitly registered containers;
+- the same namespaced identity across Start, desktop and taskbar consumers;
 - locale-aware application names;
 - `Hidden` and `NoDisplay` handling;
 - `OnlyShowIn` / `NotShowIn` evaluation using `Meldframe` as the desktop identity;
@@ -21,9 +23,9 @@ The current implementation includes:
 - persistent registration of a container ID and the path containing its application entries;
 - rescanning registered paths when the shell starts, so the catalogue reflects applications added or removed in the guest.
 
-The parser has also been exercised against real WPS Office 12.1.2 and Cylheim 4.11.1 desktop entries in addition to automated fixtures/tests.
+The parser has been exercised against real WPS Office 12.1.2 and Cylheim 4.11.1 desktop entries in addition to automated fixtures/tests. On WSA, all six WPS entries from a registered test directory were verified as visible in Start using the names resolved for a `zh_CN` device.
 
-## What is not implemented
+## Important current limitations
 
 Discovery does **not** currently imply any of the following:
 
@@ -31,8 +33,11 @@ Discovery does **not** currently imply any of the following:
 - a Wayland compositor/presentation backend;
 - XWayland support;
 - automatic discovery of every Termux/PRoot/chroot distribution;
+- direct scanning of an arbitrary PRoot guest filesystem through a runtime provider — the current scanner needs a path visible to the Android process;
+- resolving Linux icon themes — discovered Linux applications currently use the generic managed placeholder rather than their `.desktop` `Icon` theme asset;
 - a stable end-user package installer;
 - desktop-file MIME/open-with integration across Android and Linux;
+- remote-application registration/listing;
 - a stable public Guest Protocol.
 
 The missing execution backend is intentional. Meldframe keeps an application visible as a known catalogue item while refusing an execution plan it cannot actually satisfy, rather than pretending discovery proves launch capability.
@@ -51,9 +56,19 @@ mf.sh uninstall debian
 
 `install` associates a container ID with either a `.desktop` file or a directory containing entries. The registration stores the **path**, not a snapshot of parsed applications. On a later shell start Meldframe rescans that path.
 
+The registration itself persists across an APK reinstall in the current WSA validation because Meldframe stores the registered path and rescans it at startup. This does not guarantee that the referenced path or guest contents survive every Android uninstall/update/storage scenario.
+
 `linux` reports registered containers, discovered entries and the argument vector each executable entry would use. `uninstall` removes the registration; it does not uninstall software from the guest Linux environment.
 
 See [Testing Meldframe with ADB](TESTING_AND_ADB.md) for the security and availability boundaries of this test bridge.
+
+## What appears in Start
+
+An eligible application from a registered Linux container is now a normal Start catalogue item. This fixes an earlier implementation gap where `mf apps` could report Linux entries while Start silently dropped every `AppId.Linux` item.
+
+The identity remains namespaced. For example, a `firefox.desktop` entry registered under `debian` and one registered under `alpine` remain two applications rather than collapsing into a single `firefox` item. Pinning, desktop and taskbar consumers therefore receive the same container-aware identity used by the catalogue.
+
+Remote applications are intentionally different: there is currently no user-facing remote-host registration gesture behind them, so `AppId.Remote` entries are still excluded from Start. Linux Start integration is not evidence that remote application support has landed.
 
 ## Container identity matters
 
@@ -87,7 +102,7 @@ A useful way to read the current state is:
 ```text
 .desktop discovery and identity       implemented
             ↓
-common Start/application catalogue    implemented
+Start/application catalogue listing   implemented + WSA verified
             ↓
 Linux GUI execution backend           not yet implemented
             ↓
