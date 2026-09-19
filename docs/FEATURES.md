@@ -18,7 +18,7 @@ letting every UI surface talk directly to Android package APIs.
 Current architecture includes:
 
 - a unified `AppDescriptorRepository`;
-- typed application IDs, including Android work-profile identity;
+- typed application IDs, including Android work-profile and Linux container identity;
 - a central `ApplicationCoordinator` and execution planner;
 - a backend-neutral `WindowRegistry`;
 - capability-aware backend admission;
@@ -86,6 +86,16 @@ The current path can:
 - start service-backed workloads;
 - report health into the runtime/capability model.
 
+Meldframe can also now register a guest/container `.desktop` directory, parse its application entries
+and merge them into the common application catalogue with container-scoped Linux identities. The
+parser handles desktop-entry visibility/localization and resolves `Exec` to argv without handing it to
+a shell. This discovery path has been checked against real WPS Office and Cylheim entries.
+
+**Linux application discovery is not Linux GUI execution.** Discovered entries may appear in Start,
+but the current build deliberately refuses to launch `AppId.Linux` because the GUI execution and
+presentation chain does not exist yet. Registration is currently exposed through the opt-in ADB test
+bridge rather than a finished end-user installer. See [Linux application discovery](LINUX_APPS.md).
+
 Longer-term providers are expected to include a curated Meldframe Runtime companion, chroot,
 Android Virtualization Framework (AVF) guests, SSH and remote runtimes.
 
@@ -148,6 +158,7 @@ See [Capabilities](CAPABILITIES.md).
 
 Important directions that should currently be read as roadmap work, not completed product promises:
 
+- Linux GUI execution for the newly discoverable `.desktop` applications;
 - per-window Linux GUI integration through Wayland;
 - XWayland compatibility;
 - dma-buf/AHardwareBuffer/SurfaceControl fast paths;
