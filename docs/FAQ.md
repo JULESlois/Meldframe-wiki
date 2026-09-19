@@ -21,11 +21,31 @@ More privileged integrations may be possible on rooted, Shizuku-enabled, system-
 
 ## Does Meldframe run Linux applications?
 
-Partially, and the distinction matters.
+There are several separate milestones here, and treating them as one “Linux support” switch is misleading.
 
-The current runtime work has a real external-Termux execution path and service-backed workloads such as code-server. Terminal is also used to validate the runtime model.
+**Implemented:** Meldframe can use the current external-Termux provider for command/service workloads. It can also parse registered Linux `.desktop` entries into the common application catalogue and list those entries in Start. This discovery path has been verified with real WPS Office and Cylheim desktop entries.
 
-Full Linux GUI multi-window integration through Wayland is roadmap work. It should not currently be read as “all Linux desktop applications run like native Android windows”.
+**Not yet implemented as a product path:** an `AppId.Linux` entry does not currently have a Linux GUI execution/presentation backend. Selecting such an entry therefore must not be interpreted as native-style Linux GUI support.
+
+**Research evidence:** the M3 whole-display experiment has run a real Linux GUI application under a nested compositor and demonstrated that rendered frames reach an RFB connection. The browser-side noVNC test path did not render those frames, and per-window Wayland integration has not been implemented. This is useful engineering evidence, not a shipping Linux desktop feature.
+
+See [Linux applications](LINUX_APPS.md) and [Runtimes](RUNTIMES.md) for the exact boundary.
+
+## Why can a Linux application appear in Start but not launch?
+
+Discovery and execution are deliberately separate.
+
+A registered container can contribute valid `.desktop` metadata to the application catalogue, so Meldframe can know the application's identity, localized name and intended argv before a compatible GUI backend exists. Current Linux entries therefore prove catalogue integration, not launchability. Meldframe should refuse an unsupported launch explicitly rather than pretending that discovery implies execution support.
+
+The current Linux icon is also a generic placeholder because resolving a `.desktop` `Icon` normally requires access to the guest's icon themes; that integration is not implemented yet.
+
+## Does the Linux GUI proof of concept mean Wayland support is finished?
+
+No.
+
+The experiment proves only specific links in the chain: a real Linux GUI application can run, the compositor can render it, and the resulting frame can reach the RFB wire. It does not establish a production presentation backend, Start-to-GUI launch path, per-window `xdg_toplevel` integration, input/IME integration, clipboard integration, accelerated buffer sharing or broad application compatibility.
+
+A failed or successful research harness is evidence about that harness. It is not automatically a product compatibility claim.
 
 ## Do I have to use Termux?
 
@@ -50,6 +70,14 @@ Some deeper desktop/task/SystemUI integrations inherently require more authority
 No. Per-window Wayland integration is a roadmap target.
 
 The planned progression deliberately starts with correct `xdg_toplevel` lifecycle and copied/shared-memory frames, then moves toward damage-aware copy, dma-buf and AHardwareBuffer/SurfaceControl fast paths. This avoids treating zero-copy graphics as a prerequisite for proving the window model.
+
+## What is the guest capability probe, and does Meldframe use it to choose a runtime today?
+
+`GuestCapabilityProbe` is implemented and unit-tested groundwork for asking a particular guest environment about facts such as libc, PRoot, Wayland/X11/XWayland and graphics availability. Its verdicts intentionally distinguish `PRESENT`, `ABSENT` and `UNKNOWN`; an inconclusive probe is not converted into “unsupported”.
+
+It is **not currently wired into a production RuntimeProvider or planner path**. Therefore the existence of the probe does not mean Meldframe already performs automatic live guest selection. It is a prerequisite for later runtime planning work.
+
+The distinction matters because two environments reached through the same host app can have different capabilities—for example a native Termux userspace and a Debian userspace under PRoot.
 
 ## Is Meldframe trying to replace Android's window manager?
 
