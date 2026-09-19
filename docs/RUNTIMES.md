@@ -44,9 +44,27 @@ The implementation now contains a structured `GuestCapabilityProbe`. It asks an 
 
 Each answer is tri-state: `PRESENT`, `ABSENT`, or `UNKNOWN`. `UNKNOWN` deliberately means that the question could not be answered; it is not silently converted to `ABSENT`. The probe also retains short evidence from the command result so a capability decision can be traced back to what the guest actually reported.
 
+Two implementation details are important when interpreting these results:
+
+1. **A successful command is not automatically a positive capability result.** For example, musl can answer `ldd --version` and exit successfully. The probe therefore classifies the reported libc from command output rather than treating exit code 0 as proof of glibc compatibility. This prevents a Debian/glibc workload from being planned into an incompatible Alpine/musl environment.
+2. **A component is not necessarily a usable presentation path by itself.** XWayland can present X11 clients only when a Wayland compositor is available. `XWayland=PRESENT` with `Wayland=ABSENT` or `UNKNOWN` therefore does not advertise an XWayland presentation backend.
+
 Presentation capability is derived conservatively. A Wayland backend is only advertised from a positive Wayland probe. XWayland requires both XWayland and Wayland to be positively present. An unknown probe therefore cannot make the planner select a presentation path that merely *might* work.
 
-This is **implemented capability-model/probe logic**, not evidence that every runtime provider already runs these probes or that a production Wayland backend exists. In particular, the current user-facing Termux path remains WebView-based.
+### Current wiring boundary
+
+As of the current implementation, the probe and its verdict logic are implemented and covered by tests, but **nothing in the production runtime path calls `GuestCapabilityProbe` yet**. Wiring it to a provider requires the runtime execution path being developed for the Linux GUI milestones.
+
+This distinction is deliberate:
+
+```text
+probe model + verdict logic        implemented and tested
+provider invokes probe             not wired yet
+planner consumes live guest facts  not a current user capability
+production Wayland/XWayland path   not implemented
+```
+
+Consequently, users should not interpret the presence of this code as a new compatibility promise for their Termux distribution, PRoot guest or Linux application. The current user-facing Termux path remains WebView-based.
 
 ## Setup state versus runtime state
 
@@ -147,7 +165,7 @@ This result is useful engineering evidence, but it is not a shipped feature. It 
 | External Termux native execution | **Implemented and device-verified on WSA** | `RUN_COMMAND` probe can establish a ready runtime and service-backed apps have been exercised |
 | ttyd loopback runtime/transport | **Implemented and device-verified on WSA** | useful for Terminal; not equivalent to a native PTY reattach protocol |
 | code-server service path | **Implemented and device-verified on WSA** | service-backed WebView application path works |
-| Structured guest capability probe | **Implemented core probe logic** | can interpret glibc/PRoot/Wayland/X11/XWayland/DRM/Vulkan evidence; do not assume every provider is wired to it |
+| Structured guest capability probe | **Implemented and unit-tested, not provider-wired** | verdict logic handles glibc/musl and presentation dependencies; current providers do not yet expose these live probe results to the planner |
 | Whole-display Linux GUI chain | **Research PoC, partial success** | application → compositor → RFB frame was proven; noVNC presentation remained broken in the development harness |
 | PRoot/proot-distro as a general discovered runtime | **Architecture/roadmap, not a general current provider** | do not assume installed distros are automatically discovered or selectable |
 | root/chroot | **Candidate/roadmap** | no general production provider should be inferred from root availability |
