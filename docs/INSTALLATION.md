@@ -30,23 +30,62 @@ reported as `AvailableWithSetup` or an equivalent runtime state rather than cras
 
 ## Current Linux runtime path: external Termux
 
-The first real `RuntimeProvider` uses Termux's `RUN_COMMAND` service. The implementation repository
-has verified this path on WSA; that does **not** imply that every Android/OEM combination has been
-verified.
+The first real `RuntimeProvider` uses Termux's public `RUN_COMMAND` service. The implementation
+repository has verified this path on WSA; that does **not** imply that every Android/OEM combination
+has been verified.
 
-For the current integration, Termux must allow external command requests:
+There are two independent setup requirements.
+
+### 1. Allow external commands in Termux
+
+In Termux, add this line to `~/.termux/termux.properties`:
 
 ```properties
-# ~/.termux/termux.properties
 allow-external-apps=true
 ```
 
-Meldframe also needs Termux's `com.termux.permission.RUN_COMMAND` permission. Merely detecting the
-Termux package is not enough: the provider runs a real `uname -a` command and only reports the
-runtime ready after the command returns successfully.
+Then reload Termux settings:
 
-If Termux is installed but command execution fails, treat that as a setup/runtime problem rather than
-proof that Linux execution is unsupported on the device.
+```sh
+termux-reload-settings
+```
+
+Restarting Termux is a reasonable fallback if the setting does not appear to take effect.
+
+### 2. Grant Meldframe Termux's RUN_COMMAND permission
+
+Meldframe must hold:
+
+```text
+com.termux.permission.RUN_COMMAND
+```
+
+This permission is not evidence that the runtime works by itself. In the WSA development setup used
+by the implementation repository, the permission was granted explicitly with ADB:
+
+```sh
+adb shell pm grant top.cmys.meldframe com.termux.permission.RUN_COMMAND
+```
+
+That command is a **recorded development/test setup path**, not a claim that ADB should be a permanent
+end-user installation requirement. If packaging or an in-app permission flow changes in the
+implementation repository, follow the implementation rather than preserving this command as lore.
+
+### 3. Verify the probe, not just the packages
+
+After both requirements are satisfied, Meldframe's provider runs a real `uname -a` command through
+Termux and waits for its result. A healthy runtime is therefore stronger evidence than “Termux is
+installed”.
+
+The current diagnostics are intentionally specific about missing setup:
+
+- missing `RUN_COMMAND` permission → runtime needs setup;
+- Termux refusing external execution → check `allow-external-apps=true`;
+- command/result failure → preserve the reported reason rather than treating package presence as
+  success.
+
+On the recorded WSA verification, both setup steps produced a `READY` Termux runtime and a successful
+`uname -a` result. This is a test point, not an Android-wide compatibility guarantee.
 
 ## Terminal dependencies
 
