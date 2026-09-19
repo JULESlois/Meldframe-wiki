@@ -24,6 +24,19 @@ Current architecture includes:
 - capability-aware backend admission;
 - desktop session modes and device profiles.
 
+### Launch provenance is not a feature matrix
+
+Every launch can carry a `LaunchSource` so diagnostics and future policy can distinguish where the
+request originated. The core currently defines sources for Start, Desktop, Taskbar, Dock, Search,
+Open With, shortcuts, extensions, command-line requests and unknown callers. This metadata does
+**not** select a different execution backend or change application resolution.
+
+The existence of a source value also does not prove that its corresponding shell surface is shipped
+or complete. In particular, `DOCK` was added to the core launch-provenance vocabulary before a Dock
+surface should be considered a verified user-facing feature. Treat the source enum as a common data
+contract, not as a list of implemented launchers. User-visible support is documented by the relevant
+feature/usage page and ultimately by the implementation and its tests.
+
 Deeper Android task control depends on the authority available on a device. Ordinary APK, root,
 Shizuku/system and future WM Shell integrations are treated as different capability providers.
 
