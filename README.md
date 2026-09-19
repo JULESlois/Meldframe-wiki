@@ -127,6 +127,15 @@ used to validate the API before it is frozen.
 
 Read [Extensions and plugins](docs/EXTENSIONS.md).
 
+## For testers
+
+Current builds include an opt-in ADB acceptance bridge that exercises the live application catalogue,
+launcher and window-command surfaces without coordinate tapping. It ships disabled and still relies
+on Android's privileged `DUMP` permission; the Settings switch is not by itself an authorization
+boundary. It is a test surface, not a stable public automation API.
+
+Read [Testing Meldframe with ADB](docs/TESTING_AND_ADB.md) and [Keyboard and accessibility](docs/KEYBOARD_ACCESSIBILITY.md).
+
 ## For extension authors and contributors
 
 Start with:
