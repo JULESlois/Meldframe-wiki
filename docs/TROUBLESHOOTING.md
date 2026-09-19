@@ -22,19 +22,42 @@ being installed or a UI entry being visible.
 
 ## Termux is installed, but Meldframe says the runtime is not ready
 
-Package presence is intentionally insufficient.
+Package presence is intentionally insufficient. There are two independent setup gates and then a
+real execution probe.
 
-Check that Termux allows external applications in `~/.termux/termux.properties`:
+First, check that Termux allows external applications in `~/.termux/termux.properties`:
 
 ```properties
 allow-external-apps=true
 ```
 
-Meldframe also needs `com.termux.permission.RUN_COMMAND`. The current provider proves readiness by
-running `uname -a` through the real Termux command path and receiving stdout/stderr/exit status.
+Reload the setting with:
 
-If that round-trip fails, preserve the failure reason in a bug report. Do not “fix” diagnostics by
-forcing the capability to Available unless you are deliberately testing the override path.
+```sh
+termux-reload-settings
+```
+
+Second, Meldframe must hold `com.termux.permission.RUN_COMMAND`. The implementation repository's WSA
+development setup used:
+
+```sh
+adb shell pm grant top.cmys.meldframe com.termux.permission.RUN_COMMAND
+```
+
+Treat this as the currently recorded test setup, not a promise that ADB is the eventual end-user
+permission flow.
+
+Finally, the provider proves readiness by running `uname -a` through Termux's actual `RUN_COMMAND`
+service and receiving stdout/stderr/exit status. Use the provider's reason to distinguish the cases:
+
+- it asks for `RUN_COMMAND` → the permission gate is missing;
+- it says Termux refused the command and mentions `allow-external-apps` → fix/reload the Termux
+  property;
+- both are configured but `uname -a` still fails → this is an execution/result-path failure and is
+  worth reporting with the exact reason.
+
+Do not “fix” diagnostics by forcing the capability to Available unless you are deliberately testing
+the override path.
 
 ## Terminal opens but cannot connect
 
