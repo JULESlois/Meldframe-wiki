@@ -37,6 +37,27 @@ surface should be considered a verified user-facing feature. Treat the source en
 contract, not as a list of implemented launchers. User-visible support is documented by the relevant
 feature/usage page and ultimately by the implementation and its tests.
 
+### Recovered-window presentation port
+
+The compatibility layer now exposes a **personality-neutral presentation port** for windows owned by
+the recovered Hyperdroid host. This is implemented as an adapter over the existing host's
+`WindowCommands`; it is not a second window manager or a new source of truth.
+
+The current port can enumerate task-managed windows for an `AppId` and expose an opaque,
+process-local handle with the observed state (`NORMAL`, `MINIMIZED` or `MAXIMIZED`), active/focus
+status, and the exact commands the recovered host can execute:
+
+- activate;
+- minimize;
+- restore;
+- maximize/windowed toggle;
+- close.
+
+The port deliberately does **not** invent fullscreen or zoom semantics. It also keeps the underlying
+`Fragment` association private and weak, so shell personalities receive a stable command surface
+without retaining or inspecting host objects. This is an implemented compatibility adapter, but it
+is not evidence that multiple shell personalities or a public window-management SDK already exist.
+
 Deeper Android task control depends on the authority available on a device. Ordinary APK, root,
 Shizuku/system and future WM Shell integrations are treated as different capability providers.
 
