@@ -46,6 +46,7 @@ Learn the main subsystems:
 - **[Guest Protocol](docs/GUEST_PROTOCOL.md)** — proposed versioned host↔guest boundary for exec, PTY, services, files and desktop integration; current Termux paths are narrower and not yet this stable protocol.
 - **[Terminal](docs/TERMINAL.md)** — sessions, runtimes, transports, verified behavior and current limitations.
 - **[Code / service-backed apps](docs/CODE.md)** — Linux service + Android WebView composition, health and gateway behavior.
+- **[Browser](docs/BROWSER.md)** — current WebView browser, tabs, address behavior, verified WSA behavior and the boundary with future Browser Broker work.
 - **[Capabilities](docs/CAPABILITIES.md)** — why Meldframe says Available, Experimental, Broken, Unknown, and more.
 - **[Extensions and plugins](docs/EXTENSIONS.md)** — apps, runtime providers, compatibility layers and future third-party plugins.
 - **[Architecture overview](docs/ARCHITECTURE.md)** — how execution, presentation, runtimes and windows fit together.
@@ -92,13 +93,14 @@ The current development architecture already includes:
 - external Termux command/service integration;
 - service supervision;
 - code-server as a service-backed application;
+- an internal WebView Browser with multi-tab state and Meldframe-owned new-tab page;
 - typed extension contributions;
 - evidence-based WebAssembly capability probing;
 - an operation-scoped Android task-provider boundary, including an opt-in experimental Magisk adapter.
 
 The strongest recorded device evidence is currently from WSA, not a broad Android/OEM compatibility matrix. Work-profile behavior and OEM desktop modes still need representative hardware verification. The WSA task-control experiments prove selected command semantics on one exact build, but the recorded in-app Magisk path still lacks a successful privileged round trip. See [Compatibility and verification](docs/COMPATIBILITY.md), [Known limitations](docs/KNOWN_LIMITATIONS.md) and [Android desktop integration](docs/ANDROID_DESKTOP.md).
 
-Major areas such as the versioned Meldframe Guest Protocol, full Wayland multi-window integration, AVF Linux providers, external extension packaging, Browser/Playwright brokers and broader privileged Android providers remain active roadmap work. Existing Termux command/service paths are implementation evidence for the future guest boundary, not proof that the general Guest Protocol already exists. Runtime isolation is also not a single yes/no capability: PRoot is a compatibility mechanism rather than a strong sandbox, while AVF is a future VM-backed provider target. See [Runtime isolation and trust](docs/RUNTIME_SECURITY.md) and [Features and current status](docs/FEATURES.md) before assuming a feature or isolation property is production-ready.
+Major areas such as the versioned Meldframe Guest Protocol, full Wayland multi-window integration, AVF Linux providers, external extension packaging, Browser/Playwright brokers and broader privileged Android providers remain active roadmap work. The current internal Browser is not the proposed Browser Broker. Existing Termux command/service paths are implementation evidence for the future guest boundary, not proof that the general Guest Protocol already exists. Runtime isolation is also not a single yes/no capability: PRoot is a compatibility mechanism rather than a strong sandbox, while AVF is a future VM-backed provider target. See [Runtime isolation and trust](docs/RUNTIME_SECURITY.md) and [Features and current status](docs/FEATURES.md) before assuming a feature or isolation property is production-ready.
 
 ## For users
 
