@@ -59,6 +59,48 @@ service and receiving stdout/stderr/exit status. Use the provider's reason to di
 Do not “fix” diagnostics by forcing the capability to Available unless you are deliberately testing
 the override path.
 
+## A registered Linux application is missing from Start
+
+Linux application **discovery and Start listing are implemented**, but they are narrower than a full
+Linux desktop integration. Diagnose discovery before launch.
+
+Current registration stores a container name and a directory path that the Android process can
+actually read. Meldframe scans that registered tree for freedesktop `.desktop` entries. A path that
+exists only inside a PRoot guest namespace is not automatically visible to Android; arbitrary
+in-guest scanning still needs a future runtime execution path.
+
+Check these separately:
+
+1. Is the container registered, and is its registered directory still readable from Android?
+2. Does the directory contain the expected `.desktop` entry?
+3. Does the entry intentionally hide itself with `Hidden`, `NoDisplay`, `OnlyShowIn` or
+   `NotShowIn` semantics?
+4. Does the catalogue contain the Linux application even if Start search does not?
+5. If two containers contain the same desktop id, check the full namespaced identity rather than
+   assuming they are duplicates: Linux app identity is `container + desktopId`.
+
+The implementation has been verified with real WPS Office and Cylheim desktop entries, including
+localized WPS names on a `zh_CN` WSA device. That is evidence for the parser/listing path, not a
+promise that every desktop file or Android storage layout works.
+
+A generic icon is currently expected. Resolving a `.desktop` `Icon` value normally requires access to
+the guest's icon themes, and that integration is not implemented yet.
+
+## A Linux application appears in Start but does not launch
+
+This is currently an **implementation boundary, not evidence that discovery failed**.
+
+Meldframe can discover registered Linux `.desktop` applications and list them in Start, but there is
+no production `AppId.Linux` GUI launch backend yet. Selecting such an entry therefore must not be
+interpreted as equivalent to launching a native Android or service-backed application.
+
+The M3 research PoC has separately proved that a real Linux GUI application can render through a
+nested compositor and reach the RFB wire. It has **not** turned that experiment into the Start launch
+path, production Wayland/XWayland presentation, or per-window Linux integration. Do not work around
+the missing backend by marking Wayland or XWayland capabilities as available.
+
+See [Linux applications](LINUX_APPS.md) for the current discovery/execution/presentation boundary.
+
 ## Terminal opens but cannot connect
 
 The current PoC can use a ttyd loopback transport. A TCP listener existing on the configured port is
@@ -166,5 +208,6 @@ system integrations are roadmap/research work. A missing implementation is not a
 - [Installation and setup](INSTALLATION.md)
 - [Using Meldframe](USAGE.md)
 - [Capabilities](CAPABILITIES.md)
+- [Linux applications](LINUX_APPS.md)
 - [Terminal](TERMINAL.md)
 - [Code](CODE.md)
