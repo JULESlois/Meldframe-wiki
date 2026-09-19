@@ -27,6 +27,34 @@ Current architecture includes:
 Deeper Android task control depends on the authority available on a device. Ordinary APK, root,
 Shizuku/system and future WM Shell integrations are treated as different capability providers.
 
+A separate shell-control bridge now exists for acceptance/testing from `adb shell`. It ships disabled
+and is explicitly enabled under **Settings > Privacy and security > For developers**. Enabling the
+switch is not itself the security boundary: the exported receiver also requires Android's
+signature/privileged `DUMP` permission, so an ordinary installed application cannot invoke it. The
+current WSA acceptance run verified disabled-by-default, enable, command response and disable-again
+behavior. This bridge should be treated as a developer/test surface, not as a public automation SDK.
+
+## Browser
+
+The internal Browser is now a multi-tab WebView application rather than the earlier single-page
+recovery slice.
+
+Current implementation includes:
+
+- one persistent WebView per open tab;
+- a tab strip integrated with the window title bar;
+- deterministic new-tab, switching and close behavior;
+- back, forward and refresh navigation;
+- address/search resolution with `javascript:` refused at the address bar;
+- a Meldframe-owned local new-tab page;
+- standard Meldframe window controls.
+
+The recorded WSA acceptance run verified opening, switching and closing multiple tabs, including
+closing the final tab as a Browser-window close. This does **not** mean the proposed Browser Broker,
+Playwright/Puppeteer automation or a Chromium extension platform is implemented.
+
+See [Browser](BROWSER.md).
+
 ## Meldframe Terminal
 
 Terminal is the first runtime application used to validate the Linux/runtime architecture.
