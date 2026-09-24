@@ -91,6 +91,22 @@ rather than adding links without context.
   https://www.winehq.org/
 - Box64 — x86_64 userspace translation on ARM64 and Wine integration:  
   https://github.com/ptitSeb/box64
+- FEX — x86/x86_64 userspace emulation on ARM64; relevant to ARM64EC/Wine integration:  
+  https://github.com/FEX-Emu/FEX
+- Hangover — Wine + ARM64/ARM64EC-oriented Windows compatibility architecture using FEX/Box64-style emulation:  
+  https://github.com/AndreRH/hangover
+- GameNative organization — Android-native Proton/Wine, FEX and synchronization component work:  
+  https://github.com/GameNative
+- WinNative — Android Windows compatibility experiments including embedded Wayland / Wine Wayland integration:  
+  https://github.com/WinNative-Emu/WinNative
+- DroidVM — Android VM stack targeting hardware-virtualized ARM guests including Windows ARM scenarios:  
+  https://github.com/Droid-VM/DroidVM
+- DroidVM documentation — platform requirements, VM/device support and Windows-related setup notes:  
+  https://github.com/Droid-VM/Droid-VM.github.io
+- Limbo PC Emulator — Android QEMU-based full-system emulation reference:  
+  https://github.com/limboemu/limbo
+- Microsoft Windows on Arm emulation documentation — x86/x64 user-mode application emulation boundaries:  
+  https://learn.microsoft.com/windows/arm/apps-on-arm-x86-emulation
 
 These are implementation references for a future low-priority compatibility extension, not evidence
 that Windows support is already part of Meldframe.
