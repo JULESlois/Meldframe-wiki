@@ -173,6 +173,7 @@ The wiki is also where we keep material that is useful but not yet an implementa
 
 - [ChromeOS, Android and Meldframe](research/chromeos-android-meldframe.md)
 - [Desktop portals, AppImage and native-feeling application integration](research/portal-appimage-xdg.md)
+- [Windows runtime landscape for Meldframe](research/windows-runtime-landscape.md)
 - [Ideas backlog](ideas/README.md)
 - [Primary source index](sources/README.md)
 
