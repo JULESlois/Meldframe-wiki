@@ -381,6 +381,103 @@ over a large Meldframe-specific rewrite.
 That preserves the ability to absorb upstream fixes for Wine setup, translators, graphics, Android
 compatibility, audio and controller support.
 
+
+## Runtime landscape and provider hierarchy
+
+A broader runtime survey is recorded in
+[Windows runtime landscape for Meldframe](../research/windows-runtime-landscape.md).
+
+The important architectural distinction is between **compatibility execution** and a **full Windows
+virtual machine**:
+
+~~~
+Compatibility execution
+Wine / Proton + Box64/FEX/ARM64EC
+→ preferred per-application path
+
+Full Windows VM
+Windows ARM + crosvm/QEMU
+→ real-Windows compatibility fallback
+~~~
+
+Winlator remains the recommended first bootstrap because it already integrates Wine, translation,
+graphics, audio, input and environment lifecycle. It should not become the permanent Core boundary.
+The provider should be able to evolve toward ARM64EC/FEX or Hangover-style engines without changing
+AppId, Installer, Start or taskbar semantics.
+
+The current research hierarchy is:
+
+~~~
+Windows application
+      ↓
+ExecutionPlanner
+      ├─ WinCompat       preferred
+      ├─ WindowsArmVm    compatibility fallback
+      └─ QemuLegacy      legacy/experimental
+~~~
+
+DroidVM/crosvm-style Windows ARM support belongs in the second category. Its first presentation
+should be a whole VM environment; per-window VM integration is a separate RemoteApp-like research
+problem and is not required for initial support.
+
+Limbo/generic QEMU is useful for legacy and experimental workloads but should not be the normal
+performance-oriented Windows backend on ARM Android.
+
+### Process/window lifecycle before presentation purity
+
+Before requiring Wine Wayland, the WinCompat adapter should prove that Windows process lifecycle and
+window lifecycle are separately observable.
+
+A useful intermediate milestone is:
+
+~~~
+Wine application
+    ↓
+Winlator X server/window manager
+    ↓
+WinCompat window events
+    ↓
+WindowRegistry
+~~~
+
+even if the pixels are still presented through the existing compatibility display surface.
+
+Once the common Wayland presentation path is mature, the preferred evolution is:
+
+~~~
+Win32 window
+    ↓
+Wine Wayland
+    ↓
+Meldframe WaylandPresentationProvider
+    ↓
+Android-native window/surface
+~~~
+
+Wine X11/XWayland and the legacy Winlator display path should remain fallbacks.
+
+### Refined Windows side-track
+
+The research suggests this implementation sequence:
+
+~~~
+W0  component/licence audit
+W1  WinCompat companion + versioned control boundary
+W2  launch one portable EXE through the existing display path
+W3  application/shortcut discovery → AppDescriptor
+W4  real process + window lifecycle → WindowRegistry
+W5  Setup.exe / MSI installer workflow
+W6  Portal-backed host integration
+W7  ARM64EC/FEX evaluation
+W8  Wine Wayland per-window presentation
+W9  Windows ARM VM provider
+W10 VM per-window research only if a workload justifies it
+~~~
+
+In particular, W4 is intentionally earlier than Wine Wayland: correct lifecycle semantics should be
+proved before optimizing or replacing presentation.
+
+
 ## Current status
 
 This is an architecture proposal and research direction.
